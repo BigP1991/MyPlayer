@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:divider="@drawable/normal_divider"
+    android:orientation="vertical"
+    android:showDividers="middle">
+
+    <TextView
+        android:id="@+id/setting_clear"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/setting_left_margin"
+        android:text="清除缓存"
+        android:textColor="@color/black"
+        android:textSize="20sp" />
+
+    <RelativeLayout
+        android:id="@+id/notify_layout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingLeft="@dimen/setting_left_margin"
+            android:text="推送通知"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <Switch
+            android:id="@+id/notify_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/setting_left_margin"
+            android:checked="false"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/wifi_layout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingLeft="@dimen/setting_left_margin"
+            android:text="非wifi下加载图片"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <Switch
+            android:id="@+id/wifi_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/setting_left_margin"
+            android:checked="false"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/about"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/setting_left_margin"
+        android:text="关于"
+        android:textColor="@color/black"
+        android:textSize="20sp" />
+</LinearLayout>

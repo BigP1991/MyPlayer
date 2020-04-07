@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs>
+    <tab
+        icon="@drawable/bottom_home_icon"
+        id="@+id/tab_home"
+        title="首页" />
+    <tab
+        icon="@drawable/bottom_mv_unselect"
+        id="@+id/tab_mv"
+        title="MV" />
+    <tab
+        icon="@drawable/bottom_mvlist_unselect"
+        id="@+id/tab_collect"
+        title="乐单" />
+    <tab
+        icon="@drawable/bottom_vlist_unselect"
+        id="@+id/tab_rank"
+        title="榜单" />
+</tabs>
