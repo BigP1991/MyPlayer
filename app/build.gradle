@@ -21,6 +21,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets { main { assets.srcDirs = ['src/main/assets', 'src/main/assets/'] } }
 }
 
 dependencies {
@@ -33,7 +34,14 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'androidx.cardview:cardview:1.0.0'
+
     // 一些三方控件
     implementation "org.jetbrains.anko:anko:0.10.8"
     implementation "com.roughike:bottom-bar:2.3.1"
+    implementation 'com.github.bumptech.glide:glide:4.10.0'
+
+    // okhttp
+    implementation "com.squareup.okhttp3:okhttp:4.5.0"
 }

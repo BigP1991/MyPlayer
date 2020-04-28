@@ -2,6 +2,7 @@ package com.zhc.myplayer.ui.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Message
 import android.preference.PreferenceFragment
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +22,9 @@ import org.jetbrains.anko.find
  * 描述：
  */
 class SettingFragment : BaseFragment(), View.OnClickListener {
+    override fun handleMessage(message: Message) {
+
+    }
 
     private lateinit var switchNotify: Switch
     lateinit var switchWifi: Switch

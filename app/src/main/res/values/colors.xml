@@ -6,4 +6,7 @@
 
     <color name="black">#000000</color>
     <color name="divider_color">#7f4a4a4a</color>
+
+    <color name="home_item_title">#EE82EE</color>
+    <color name="home_item_sub_title">#008B8B</color>
 </resources>
