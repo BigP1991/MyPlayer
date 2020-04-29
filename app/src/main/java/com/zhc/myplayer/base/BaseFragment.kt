@@ -28,8 +28,12 @@ abstract class BaseFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val mainView = initView(inflater, container, savedInstanceState)
-        initListener(mainView)
         return mainView
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initListener(view)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

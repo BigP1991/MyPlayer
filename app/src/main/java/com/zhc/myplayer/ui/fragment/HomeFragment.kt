@@ -1,26 +1,22 @@
 package com.zhc.myplayer.ui.fragment
 
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Message
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.zhc.myplayer.R
 import com.zhc.myplayer.adapter.HomeAdapter
+import com.zhc.myplayer.base.BaseActivity
 import com.zhc.myplayer.base.BaseFragment
 import com.zhc.myplayer.model.HomeItemBean
-import com.zhc.myplayer.util.URLProviderUtil
-import com.zhc.myplayer.widget.HomeItemView
-import okhttp3.*
+import com.zhc.myplayer.presenter.impl.HomePresenterImpl
+import com.zhc.myplayer.view.HomeView
 import org.jetbrains.anko.find
-import java.io.IOException
-import java.lang.Exception
 
 /**
  * @author created by zhanghaochen
@@ -28,16 +24,37 @@ import java.lang.Exception
  * 描述：
  */
 @Suppress("UNCHECKED_CAST")
-class HomeFragment : BaseFragment() {
+class HomeFragment : BaseFragment(), HomeView {
+    companion object {
+        const val HANDLER_REFRESH = 0x100
+        const val HANDLER_END_REFRESH = 0x101
+        const val HANDLER_LOAD_MORE = 0x102
+    }
+
     private val mAdapter: HomeAdapter by lazy {
         HomeAdapter()
     }
 
+    private val mPresenter by lazy {
+        HomePresenterImpl(this)
+    }
+
+    private lateinit var mRefreshLayout: SwipeRefreshLayout
+
     override fun handleMessage(message: Message) {
         when (message.what) {
-            0x100 -> {
+            HANDLER_REFRESH     -> {
                 val data = message.obj
                 mAdapter.notifyDataChanged(data as List<HomeItemBean>)
+                mHandler.obtainMessage(HANDLER_END_REFRESH).sendToTarget()
+            }
+            HANDLER_LOAD_MORE   -> {
+                val data = message.obj
+                mAdapter.notifyDataChangedMore(data as List<HomeItemBean>)
+                mHandler.obtainMessage(HANDLER_END_REFRESH).sendToTarget()
+            }
+            HANDLER_END_REFRESH -> {
+                mRefreshLayout.isRefreshing = false
             }
         }
     }
@@ -58,38 +75,53 @@ class HomeFragment : BaseFragment() {
                 }
             }
         }
-
         recyclerView?.adapter = mAdapter
+        recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                // 判断是否是闲置状态下的最后一条数据
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (recyclerView.layoutManager is LinearLayoutManager) {
+                        val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                        val lastIndex = layoutManager.findLastCompletelyVisibleItemPosition()
+                        if (lastIndex == layoutManager.itemCount - 1) {
+                            mPresenter.loadData(false)
+                        }
+                    }
+                }
+            }
 
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            }
+        })
+
+        // 初始化刷新控件
+        mRefreshLayout = mainView?.find(R.id.home_refresh_layout)!!
+        mRefreshLayout.setColorSchemeColors(Color.RED, Color.GREEN)
+        mRefreshLayout.setOnRefreshListener {
+            mPresenter.loadData(true)
+        }
+    }
+
+    override fun loadAllSuccess(data: List<HomeItemBean>) {
+        myToast("读取成功")
+        mHandler.obtainMessage(HANDLER_REFRESH, data).sendToTarget()
+    }
+
+    override fun loadMoreSuccess(data: List<HomeItemBean>) {
+        myToast("读取成功")
+        mHandler.obtainMessage(HANDLER_LOAD_MORE, data).sendToTarget()
+    }
+
+    override fun loadFail(string: String) {
+        myToast(string)
+        mHandler.obtainMessage(HANDLER_END_REFRESH).sendToTarget()
+    }
+
+    override fun getBaseActivity(): BaseActivity? {
+        return activity as BaseActivity
     }
 
     override fun initData() {
-        loadData()
-    }
-
-    private fun loadData() {
-        val path = URLProviderUtil.getHomeUrl(0, 20)
-        val client = OkHttpClient()
-        val request = Request.Builder()
-                .url(path)
-                .get()
-                .build()
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                myToast("失败")
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                val result = response.body?.string()
-                myToast("成功 \r\n $result")
-
-                val jsonStr = activity?.resources?.getString(R.string.home_reponse)
-                val gson = Gson()
-                val homeBean = gson.fromJson<List<HomeItemBean>>(jsonStr, object : TypeToken<List<HomeItemBean>>() {}.type)
-                mHandler.obtainMessage(0x100, homeBean).sendToTarget()
-                Log.d("zhc", "长度：" + homeBean.size)
-            }
-
-        })
+        mPresenter.loadData(true)
     }
 }
