@@ -1,13 +1,8 @@
 package com.zhc.myplayer.base
 
-import android.app.Activity
-import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.debug
 import org.jetbrains.anko.toast
 
 /**
@@ -55,12 +50,3 @@ abstract class BaseActivity : AppCompatActivity(), AnkoLogger {
         }
     }
 }
-
-//kotlin 封装：
-fun <V : View?> Activity.bindView(id: Int): Lazy<V> = lazy {
-    viewFinder(id) as V
-}
-
-//acitivity中扩展调用
-private val Activity.viewFinder: Activity.(Int) -> View?
-    get() = { findViewById(it) }

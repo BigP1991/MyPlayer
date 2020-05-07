@@ -1,15 +1,10 @@
 package com.zhc.myplayer.presenter.impl
 
-import android.util.Log
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import com.zhc.myplayer.R
 import com.zhc.myplayer.model.HomeItemBean
+import com.zhc.myplayer.net.HomeRequest
+import com.zhc.myplayer.net.ResponseHandler
 import com.zhc.myplayer.presenter.`interface`.HomePresenter
-import com.zhc.myplayer.util.URLProviderUtil
 import com.zhc.myplayer.view.HomeView
-import okhttp3.*
-import java.io.IOException
 
 /**
  * @author created by zhanghaochen
@@ -18,29 +13,20 @@ import java.io.IOException
  */
 class HomePresenterImpl(val homeView: HomeView) : HomePresenter {
     override fun loadData(isRefreshAll: Boolean) {
-        val path = URLProviderUtil.getHomeUrl(0, 20)
-        val client = OkHttpClient()
-        val request = Request.Builder()
-            .url(path)
-            .get()
-            .build()
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
+        // 定义一个request
+        val homeRequest = HomeRequest(0, 20, object : ResponseHandler<List<HomeItemBean>> {
+            override fun onError(msg: String?) {
                 homeView.loadFail("读取失败")
             }
 
-            override fun onResponse(call: Call, response: Response) {
-                val jsonStr = homeView.getBaseActivity()?.resources?.getString(R.string.home_reponse)
-                val gson = Gson()
-                val homeBean = gson.fromJson<List<HomeItemBean>>(jsonStr, object : TypeToken<List<HomeItemBean>>() {}.type)
+            override fun onSuccess(result: List<HomeItemBean>) {
                 if (isRefreshAll) {
-                    homeView.loadAllSuccess(homeBean)
+                    homeView.loadAllSuccess(result)
                 } else {
-                    homeView.loadMoreSuccess(homeBean)
+                    homeView.loadMoreSuccess(result)
                 }
-                Log.d("zhc", "长度：" + homeBean.size)
             }
-
-        })
+        }).sendRequest()
+        // 发送request
     }
 }
