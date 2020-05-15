@@ -9,4 +9,8 @@
 
     <color name="home_item_title">#EE82EE</color>
     <color name="home_item_sub_title">#008B8B</color>
+
+    <color name="music_item_title">#EE82EE</color>
+    <color name="music_item_desc">#EE82EE</color>
+    <color name="music_item_count">#EE82EE</color>
 </resources>

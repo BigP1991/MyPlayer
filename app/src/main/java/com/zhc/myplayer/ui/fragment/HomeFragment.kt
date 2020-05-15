@@ -61,6 +61,7 @@ class HomeFragment : BaseFragment(), HomeView {
 
     override fun initView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
+        mPresenter?.bindView(this)
 
         return view
     }
@@ -100,6 +101,11 @@ class HomeFragment : BaseFragment(), HomeView {
         mRefreshLayout.setOnRefreshListener {
             mPresenter.loadData(true)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mPresenter.destroyView()
     }
 
     override fun loadAllSuccess(data: List<HomeItemBean>) {
